@@ -1,0 +1,11 @@
+.edit-form__save-button_disabled{
+    background-color: #fff;
+    opacity: 0.2;
+    color: #000;
+    border: 1px solid #000;
+    cursor: default;
+}
+
+.edit-form__save-button_disabled:hover{
+    opacity: 0.2;
+}

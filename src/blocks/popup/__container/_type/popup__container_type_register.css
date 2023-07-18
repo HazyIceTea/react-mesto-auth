@@ -1,0 +1,6 @@
+.popup__container_type_register{
+    display: flex;
+    flex-direction: column;
+    max-width: 430px;
+    align-items: center;
+}

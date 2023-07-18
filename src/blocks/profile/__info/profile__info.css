@@ -1,0 +1,12 @@
+.profile__info{
+    display: grid;
+    grid-template-columns: 1fr 24px;
+    grid-template-rows: min-content;
+    max-width: 60%;
+}
+
+@media screen and (max-width: 420px) {
+    .profile__info{
+        max-width: calc(100% - 18px*2);
+    }
+}

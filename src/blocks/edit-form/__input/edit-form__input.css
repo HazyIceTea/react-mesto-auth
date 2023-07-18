@@ -1,0 +1,10 @@
+.edit-form__input{
+    border: none;
+    border-bottom: rgba(0, 0, 0, 0.2) 1px solid;
+    font-family: 'Inter', ‘Arial’, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    padding-bottom: 8px;
+}

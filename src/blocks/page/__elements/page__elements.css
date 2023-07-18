@@ -1,0 +1,17 @@
+.page__elements{
+    margin: 51px auto 0;
+    width: calc(100% - 200px*2);
+}
+
+@media screen and (max-width: 1150px) {
+    .page__elements{
+        width: calc(100% - 40px*2);
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .page__elements{
+        margin-top: 33px;
+        width: calc(100% - 18px*2);
+    }
+}

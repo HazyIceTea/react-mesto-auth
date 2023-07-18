@@ -1,0 +1,12 @@
+.edit-form__validation-error{
+    color: #FF0000;
+    margin: 0;
+    font-family: 'Inter', ‘Arial’, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    margin-top: 5px;
+    min-height: 34px;
+    max-width: 342px;
+}
