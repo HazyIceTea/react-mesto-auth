@@ -51,6 +51,7 @@ function App() {
                     setCards(cardRes);
                     setCurrentUser(userRes);
                 })
+                .catch(err => console.error(`Ошибка загрузки данных страницы ${err}`))
         }
     }, [loggedIn])
 
@@ -65,7 +66,7 @@ function App() {
                         navigate('/');
                     }
                 })
-                .catch(err => console.error(`Ощшибка логина ${err}`))
+                .catch(err => console.error(`Ошибка логина ${err}`))
         }
     }, [])
 
