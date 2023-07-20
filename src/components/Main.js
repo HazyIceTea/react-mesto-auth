@@ -1,8 +1,6 @@
 import React from "react";
 import Card from "./Card";
 import CurrentUserContext from "../contexts/CurrentUserContext";
-import Header from "./Header";
-import Footer from "./Footer";
 
 function Main({
                   onCardClick,
@@ -12,9 +10,6 @@ function Main({
                   cards,
                   onCardLike,
                   onCardDelete,
-                  loggedIn,
-                  logOut,
-                  email
               }) {
     const currentUser = React.useContext(CurrentUserContext);
 
@@ -26,7 +21,6 @@ function Main({
 
     return (
         <>
-            <Header loggedIn={loggedIn} linkName="Выйти" linkPath="/sign-in" onClick={logOut} email={email}/>
             <main>
                 <section className="profile page__profile">
                     <button type="submit" className="profile__avatar-button" onClick={onEditAvatar}>
@@ -43,8 +37,6 @@ function Main({
                     {cardElements}
                 </section>
             </main>
-            <Footer/>
-
         </>
     )
 }

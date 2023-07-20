@@ -1,11 +1,9 @@
-import Header from "./Header";
-import AuthMenu from "./AuthMenu";
+import AuthForm from "./AuthForm";
 import imageSuccess from "../images/register-success.svg";
 import imageFail from "../images/register-fail.svg"
 import {useState} from "react";
-import {Link} from "react-router-dom";
 import {register} from "../utils/Auth";
-import RegisterPopup from "./RegisterPopup";
+import InfoTooltip from "./InfoTooltip";
 
 function Register() {
     const [isRegisterFailed, setIsRegisterFailed] = useState(false)
@@ -17,35 +15,43 @@ function Register() {
         setIsRegisterPopupOpened(false);
     }
 
+    const handleEmailChange = (evt) => setEmailInput(evt.target.value);
+
+    const handlePasswordChange = (evt) => setPasswordInput(evt.target.value);
+
+    const handleSubmit = (evt) => {
+        evt.preventDefault();
+        register({email: emailInput, password: passwordInput})
+            .then(res => {
+                setIsRegisterFailed(false);
+                setIsRegisterPopupOpened(true);
+            })
+            .catch(err => {
+                console.error(`Ошибка регистрации ${err}`);
+                setIsRegisterFailed(true);
+                setIsRegisterPopupOpened(true);
+            })
+    }
+
     return (
         <>
-            <Header linkName="Войти" linkPath="/sign-in"/>
-            <AuthMenu title="Регистрация" linkText="Уже зарегистрированы? Войти" buttonName="Зарегистрироваться"
-                      onSubmit={(evt) => {
-                          evt.preventDefault();
-                          register({email: emailInput, password: passwordInput})
-                              .then(res => {
-                                  setIsRegisterFailed(false);
-                                  setIsRegisterPopupOpened(true);
-                              })
-                              .catch(err => {
-                                  console.error(`Ошибка регистрации ${err}`);
-                                  setIsRegisterFailed(true);
-                                  setIsRegisterPopupOpened(true);
-                              })
-                      }}>
+
+            <AuthForm title="Регистрация" linkText="Уже зарегистрированы? Войти" buttonName="Зарегистрироваться"
+                      onSubmit={handleSubmit}>
                 <input type="email" name="registerEmail" className="auth-menu__input" placeholder="Email"
-                       onChange={(evt) => setEmailInput(evt.target.value)}/>
+                       value={emailInput}
+                       onChange={handleEmailChange}/>
                 <input type="password" name="registerPassword" className="auth-menu__input" placeholder="Пароль"
-                       onChange={(evt) => setPasswordInput(evt.target.value)}/>
-            </AuthMenu>
+                       value={passwordInput}
+                       onChange={handlePasswordChange}/>
+            </AuthForm>
 
 
-            <RegisterPopup registerPic={isRegisterFailed ? imageFail : imageSuccess}
-                           registerMessage={isRegisterFailed ?
-                               "Что-то пошло не так! Поробуйте ещё раз." :
-                               "Вы успешно зарегистрировались!"}
-                           isOpened={isRegisterPopupOpened} onClose={onClose}/>
+            <InfoTooltip registerPic={isRegisterFailed ? imageFail : imageSuccess}
+                         registerMessage={isRegisterFailed ?
+                             "Что-то пошло не так! Поробуйте ещё раз." :
+                             "Вы успешно зарегистрировались!"}
+                         isOpened={isRegisterPopupOpened} onClose={onClose}/>
         </>
     )
 }

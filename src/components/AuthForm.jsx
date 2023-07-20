@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 
-function AuthMenu({title, buttonName, children, onSubmit, linkText}) {
+function AuthForm({title, buttonName, children, onSubmit, linkText}) {
     return (
         <form className="auth-menu">
             <h2 className="auth-menu__title">{title}</h2>
@@ -11,4 +11,4 @@ function AuthMenu({title, buttonName, children, onSubmit, linkText}) {
     )
 }
 
-export default AuthMenu
+export default AuthForm

@@ -11,16 +11,14 @@ import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
-import {getMyInfo} from "../utils/Auth";
+import {checkToken} from "../utils/Auth";
+import Footer from "./Footer";
+import Header from "./Header";
 
 function App() {
     const [loggedIn, setLoggedIn] = useState(false)
 
-    function logIn() {
-        setLoggedIn(true);
-    }
-
-    function logOut(){
+    function logOut() {
         setLoggedIn(false);
         localStorage.removeItem('jwt');
     }
@@ -39,33 +37,35 @@ function App() {
 
     const [email, setEmail] = useState('');
 
-    function getEmail(){
-        getMyInfo(localStorage.getItem('jwt'))
-            .then(res => setEmail(res.data.email))
+    function handleLogin(email) {
+        setLoggedIn(true);
+        setEmail(email);
+        navigate('/');
+
     }
 
+    useEffect(()=>{
+        if(loggedIn){
+            Promise.all([api.getAllCards(), api.getUserInfo()])
+                .then(([cardRes, userRes]) => {
+                    setCards(cardRes);
+                    setCurrentUser(userRes);
+                })
+        }
+    }, [loggedIn])
+
     useEffect(() => {
-        api.getAllCards()
-            .then(res => setCards(res))
-            .catch(err => console.error(`Ошибка при загрузке начальных данных страницы ${err}`))
-    }, [])
-
-
-    useEffect(() => {
-        api.getUserInfo()
-            .then(res => setCurrentUser(res))
-            .catch(err => console.error(`Ошибка получения данных пользователя ${err}`))
-    }, [])
-
-    useEffect(() =>{
         const jwt = localStorage.getItem('jwt');
-        if(jwt){
-            getMyInfo(jwt)
-                .then(res=> {if(res){
-                    setLoggedIn(true);
-                    setEmail(res.data.email)
-                    navigate('/');
-                }})
+        if (jwt) {
+            checkToken(jwt)
+                .then(res => {
+                    if (res) {
+                        setLoggedIn(true);
+                        setEmail(res.data.email);
+                        navigate('/');
+                    }
+                })
+                .catch(err => console.error(`Ощшибка логина ${err}`))
         }
     }, [])
 
@@ -143,12 +143,9 @@ function App() {
     function handleCardDelete(card) {
         api.deleteCard(card._id)
             .then(() => {
-                setCards(cards.filter(item => {
-                    return item._id !== card._id
-                }))
+                setCards((state) => state.filter(item => item._id !== card._id))
             })
             .catch(err => console.error(`Ошибка удаления карточки ${err}`))
-
     }
 
     return (
@@ -156,15 +153,33 @@ function App() {
 
 
             <Routes>
-                <Route path="/" element={<ProtectedRoute path="/" element={Main} onEditAvatar={handleEditAvatarClick}
-                                                         onEditProfile={handleEditProfileClick}
-                                                         onAddPlace={handleAddPlaceClick} onCardClick={handleCardClick}
-                                                         cards={cards}
-                                                         onCardLike={handleCardLike} onCardDelete={handleCardDelete}
-                                                         loggedIn={loggedIn} logOut={logOut} email={email}/>}/>
-                <Route path="/sign-up" element={<Register/>}/>
-                <Route path="/sign-in" element={<Login logIn={logIn} getEmail={getEmail}/>}/>
-                <Route path="/*" element={<Navigate to="/" />} />
+                <Route path="/" element={
+                    <>
+                        <Header loggedIn={loggedIn} linkName="Выйти" linkPath="/sign-in" onClick={logOut}
+                                email={email}/>
+                        <ProtectedRoute path="/" element={Main} onEditAvatar={handleEditAvatarClick}
+                                        onEditProfile={handleEditProfileClick}
+                                        onAddPlace={handleAddPlaceClick}
+                                        onCardClick={handleCardClick}
+                                        cards={cards}
+                                        onCardLike={handleCardLike} onCardDelete={handleCardDelete}
+                                        loggedIn={loggedIn} logOut={logOut} email={email}/>
+                        <Footer/>
+                    </>
+                }/>
+                <Route path="/sign-up" element={
+                    <>
+                        <Header linkName="Войти" linkPath="/sign-in"/>
+                        <Register/>
+                    </>
+                }/>
+                <Route path="/sign-in" element={
+                    <>
+                        <Header linkName="Регистрация" linkPath="/sign-up"/>
+                        <Login  handleLogin = {handleLogin}/>
+                    </>
+                }/>
+                <Route path="/*" element={loggedIn ? <Navigate to="/"/> : <Navigate to={"/sign-in"}/>}/>
             </Routes>
 
             <EditProfilePopup isOpened={isEditProfileOpened} onClose={closeAllPopups} onUpdateUser={handleUpdateUser}/>

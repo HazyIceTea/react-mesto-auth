@@ -1,4 +1,4 @@
-function RegisterPopup({isOpened, registerPic, registerMessage, onClose}) {
+function InfoTooltip({isOpened, registerPic, registerMessage, onClose}) {
 
 
     return (
@@ -12,4 +12,4 @@ function RegisterPopup({isOpened, registerPic, registerMessage, onClose}) {
     )
 }
 
-export default RegisterPopup;
+export default InfoTooltip;

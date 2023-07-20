@@ -1,27 +1,30 @@
-import Header from "./Header";
-import AuthMenu from "./AuthMenu";
+import AuthForm from "./AuthForm";
 import {login} from "../utils/Auth";
 import {useState} from "react";
-import {useNavigate} from "react-router-dom";
 
-function Login({logIn, getEmail}) {
+function Login({handleLogin}) {
     const [emailInput, setEmailInput] = useState('');
     const [passwordInput, setPasswordInput] = useState('');
-    const navigate = useNavigate();
+
+    const handleEmailChange = (evt) => setEmailInput(evt.target.value);
+
+    const handlePasswordChange = (evt) => setPasswordInput(evt.target.value);
+
+    const handleSubmit = (evt) => {
+        evt.preventDefault();
+        login({email: emailInput, password: passwordInput})
+            .then(() => handleLogin(emailInput))
+            .catch(err => console.error(`Ошибка входа ${err }`))
+    }
     return (
         <>
-            <Header linkName="Регистрация" linkPath="/sign-up"/>
-            <AuthMenu title="Вход" buttonName="Войти" onSubmit={(evt) => {
-                evt.preventDefault();
-                login({email: emailInput, password: passwordInput})
-                    .then(() => {getEmail(); logIn();  navigate('/')})
-                    .catch(err => console.error(`Ошибка входа ${err }`))
-            }}>
+
+            <AuthForm title="Вход" buttonName="Войти" onSubmit={handleSubmit}>
                 <input type="email" name="loginEmail" className="auth-menu__input" placeholder="Email"
-                       onChange={(evt) => setEmailInput(evt.target.value)}/>
+                       onChange={handleEmailChange} value={emailInput}/>
                 <input type="password" name="loginPassword" className="auth-menu__input" placeholder="Пароль"
-                       onChange={(evt) => setPasswordInput(evt.target.value)}/>
-            </AuthMenu>
+                       onChange={handlePasswordChange} value={passwordInput}/>
+            </AuthForm>
         </>
     )
 }

@@ -1,5 +1,12 @@
 const baseUrl = "https://auth.nomoreparties.co/";
 
+function getResponseData(res) {
+    if (!res.ok) {
+        return Promise.reject(`Ошибка: ${res.status}`);
+    }
+    return res.json();
+}
+
 export const register = (data) =>{
     return fetch(`${baseUrl}signup`,{
         method: 'POST',
@@ -9,7 +16,7 @@ export const register = (data) =>{
             email: data.email
         })
     })
-        .then(res => res.ok? res.json(): Promise.reject());
+        .then(res => getResponseData(res));
 }
 
 export const login = (data) =>{
@@ -21,15 +28,15 @@ export const login = (data) =>{
             email: data.email
         })
     })
-        .then(res => res.ok? res.json(): Promise.reject())
+        .then(res => getResponseData(res))
         .then(res =>  localStorage.setItem('jwt', res.token))
 }
 
-export const getMyInfo = (token) =>{
+export const checkToken = (token) =>{
     return fetch(`${baseUrl}users/me`,{
         method: 'GET',
         headers: {"Content-Type": "application/json",
             "Authorization" : `Bearer ${token}`},
     })
-        .then(res => res.ok? res.json(): Promise.reject());
+        .then(res => getResponseData(res));
 }
